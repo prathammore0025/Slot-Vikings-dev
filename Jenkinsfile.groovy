@@ -9,7 +9,7 @@ pipeline {
     }
     
     environment {
-        PROJECT_PATH = "C:\\Program Files\\workspace\\Unity_build" // Define project path based on Jenkins pipeline name
+        PROJECT_PATH = "C:\\${PROJECT_NAME}" // Cloning the repository into C:/ instead of C:/Program Files
         Token = credentials('GITHUB_TOKEN') // Use GitHub credentials
     }
 
@@ -17,7 +17,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    git url: REPO_URL, branch: 'dev'
+                    dir("${PROJECT_PATH}") { // Clone into the desired directory
+                        git url: REPO_URL, branch: 'dev'
+                    }
                 }
             }
         }
@@ -37,18 +39,28 @@ pipeline {
         stage('Push Build') {
             steps {
                 script {
-                    // Ensure you are in the build directory
-                    bat '''
-                    git checkout dev-build
-                    git checkout dev -- Builds
-                    git add Builds
-                    git commit -m "Added Builds folder from dev branch"
-                    git config user.email "moreprathmesh849@gmail.com"
-                    git config user.name "prathammore0025"
-                    git remote set-url origin https://${Token}@github.com/prathammore0025/Slot-Vikings-dev.git
-                    git push origin dev-build
-                    '''
+                    dir("${PROJECT_PATH}") { // Ensure you are in the correct directory
+                        bat '''
+                        git checkout dev-build
+                        git checkout dev -- Builds
+                        git add Builds
+                        git commit -m "Added Builds folder from dev branch"
+                        git config user.email "moreprathmesh849@gmail.com"
+                        git config user.name "prathammore0025"
+                        git remote set-url origin https://${Token}@github.com/prathammore0025/Slot-Vikings-dev.git
+                        git push origin dev-build
+                        '''
+                    }
                 }
+            }
+        }
+    }
+    
+    triggers {
+        githubPullRequest {
+            useGitHubHooks()  // Use GitHub webhooks to trigger the build
+            branchFilter {
+                include('dev')  // Trigger only for pull requests targeting the 'dev' branch
             }
         }
     }
