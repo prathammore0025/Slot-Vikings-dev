@@ -58,11 +58,9 @@ pipeline {
     }
     
     triggers {
-        githubPullRequest {
-            useGitHubHooks()  // Use GitHub webhooks to trigger the build
-            branchFilter {
-                include('dev')  // Trigger only for pull requests targeting the 'dev' branch
-            }
+        // Simpler GitHub pull request trigger
+        pullRequest {
+            branches('dev') // Trigger for PRs targeting 'dev' branch
         }
     }
 }
