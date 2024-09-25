@@ -41,6 +41,7 @@ pipeline {
                 script {
                     dir("${PROJECT_PATH}") { // Ensure you are in the correct directory
                         bat '''
+                        git stash 
                         git checkout dev-build
                         git checkout dev -- Builds
                         git add Builds
