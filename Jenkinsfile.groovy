@@ -9,7 +9,7 @@ pipeline {
     }
     
     environment {
-        PROJECT_PATH = "C:\\${PROJECT_NAME}" // Cloning the repository into C:/ instead of C:/Program Files
+        PROJECT_PATH = "C:\\main\\${PROJECT_NAME}" // Cloning the repository into C:/ instead of C:/Program Files
         Token = credentials('GITHUB_TOKEN') // Use GitHub credentials
     }
 
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     dir("${PROJECT_PATH}") { // Clone into the desired directory
-                        git url: REPO_URL, branch: 'dev'
+                        git url: REPO_URL, branch: 'main'
                     }
                 }
             }
@@ -60,7 +60,7 @@ pipeline {
     triggers {
         // Simpler GitHub pull request trigger
         pullRequest {
-            branches('dev') // Trigger for PRs targeting 'dev' branch
+            branches('main') // Trigger for PRs targeting 'dev' branch
         }
     }
 }
