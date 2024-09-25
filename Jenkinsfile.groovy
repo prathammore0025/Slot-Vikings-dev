@@ -57,10 +57,8 @@ pipeline {
         }
     }
     
+    // Using the proper Jenkins triggers
     triggers {
-        // Simpler GitHub pull request trigger
-        pullRequest {
-            branches('dev') // Trigger for PRs targeting 'dev' branch
-        }
+        pollSCM('H/5 * * * *') // Polling the GitHub repo every 5 minutes
     }
 }
